@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Api\AuthController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::post('auth', [AuthController::class, 'login'])->name('auth.login');
+Route::middleware('auth.token')->group(function(): void {
+    Route::delete('auth', [AuthController::class, 'logout'])->name('auth.logout');
 });
