@@ -13,11 +13,11 @@ class AuthController extends Controller
 {
     public function login(LoginRequest $request): JsonResponse
     {
-        $data = $request->getDto();
+        $data = $request->validated();
         $user = User::login($data);
         if (!$user) abort(401);
-        $access_token = $user->generateToken($data->remember);
-        return response()->json(compact('user', 'access_token'), 201);
+        $access_token = $user->generateToken($data['remember']);
+        return response()->json(['data' => compact('user', 'access_token')], 201);
     }
 
     public function logout(): JsonResponse
