@@ -2,21 +2,26 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\App;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
+    use WithoutModelEvents;
+
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
-
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        $local_seeders = [
+            \Database\Seeders\Develop\ProductSeeder::class,
+            \Database\Seeders\Develop\UserSeeder::class,
+        ];
+        $production_seeders = [
+            \Database\Seeders\Production\UserSeeder::class,
+        ];
+        $this->call([
+            ...$production_seeders,
+            ...(App::environment('local') ? $local_seeders : []),
+        ]);
     }
 }
