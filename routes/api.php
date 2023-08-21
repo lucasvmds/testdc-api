@@ -22,7 +22,9 @@ Route::post('auth', [AuthController::class, 'login'])->name('auth.login');
 Route::middleware('auth.token')->group(function(): void {
     Route::delete('auth', [AuthController::class, 'logout'])->name('auth.logout');
     Route::apiResource('users', UserController::class);
+    Route::get('products/search', [ProductController::class, 'search'])->name('products.search');
     Route::apiResource('products', ProductController::class);
+    Route::get('customers/search', [CustomerController::class, 'search'])->name('customers.search');
     Route::apiResource('customers', CustomerController::class);
     Route::apiResource('sales', SaleController::class)->except(['update']);
 });

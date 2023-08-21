@@ -17,7 +17,7 @@ class ProductSaleFactory extends Factory
     public function definition(): array
     {
         return [
-            'value' => fake()->randomFloat(2, 300, 5000),
+            'value' => fake()->numberBetween(300, 5000),
             'quantity' => fake()->randomDigitNotZero(),
         ];
     }

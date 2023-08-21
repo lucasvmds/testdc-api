@@ -24,10 +24,6 @@ class Sale extends Model
         'customer_id',
     ];
 
-    protected $casts = [
-        'total' => 'float',
-    ];
-
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
@@ -40,7 +36,7 @@ class Sale extends Model
 
     public function products(): BelongsToMany
     {
-        return $this->belongsToMany(Product::class)->withPivot(['value', 'quantity']);
+        return $this->belongsToMany(Product::class)->withPivot(['value', 'quantity', 'total']);
     }
 
     public function installments(): HasMany
@@ -58,7 +54,13 @@ class Sale extends Model
     public static function create(Collection $data): static
     {
         return DB::transaction(function() use($data): static {
-            $sale_data = $data->only(['total', 'customer_id'])->toArray();
+            $total = 0;
+            foreach ($data->get('products') as $product) {
+                $total += $product['value'] * $product['quantity'];
+            }
+            $sale_data = [];
+            $sale_data['customer_id'] = $data->get('customer_id');
+            $sale_data['total'] = $total;
             $sale_data['user_id'] = User::current()?->id;
             /** @var static */
             $sale = static::query()->create($sale_data);

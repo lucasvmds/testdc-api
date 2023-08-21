@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('product_sale', function (Blueprint $table) {
             $table->id();
             $table->foreignId('sale_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('product_id')->constrained();
             $table->unsignedDecimal('value');
             $table->unsignedSmallInteger('quantity');
+            $table->unsignedDecimal('total', 11)->virtualAs('`value` * `quantity`');
         });
     }
 

@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Customer;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\Customer\SearchRequest;
 use App\Http\Requests\Api\PaginateRequest;
 use App\Http\Requests\Api\Customer\StoreRequest;
 use App\Http\Requests\Api\Customer\UpdateRequest;
@@ -20,6 +21,11 @@ class CustomerController extends Controller
         return CustomerResource::collection(Customer::getAll($request));
     }
 
+    public function search(SearchRequest $request): JsonResource
+    {
+        return CustomerResource::collection(Customer::search($request));
+    }
+    
     public function store(StoreRequest $request): JsonResource
     {
         $data = $request->validated();

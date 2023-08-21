@@ -24,13 +24,13 @@ class SaleResource extends JsonResource
             'customer_id' => $sale->customer_id,
             'user_id' => $sale->user_id,
             'total' => $sale->total,
+            'customer' => $sale->customer?->name,
+            'user' => $sale->user->name,
             'updated_at' => $sale->updated_at,
             'created_at' => $sale->created_at,
             $this->mergeWhen(
                 $request->routeIs('sales.index'),
                 [
-                    'customer' => $sale->customer?->name,
-                    'user' => $sale->user->name,
                     'products_count' => $sale->products()->count(),
                     'installments_count' => $sale->installments()->count(),
                 ],
@@ -58,6 +58,7 @@ class SaleResource extends JsonResource
                             'name' => $product->name,
                             'value' => $product->pivot->value,
                             'quantity' => $product->pivot->quantity,
+                            'total' => $product->pivot->total,
                         ]
                     );
     }

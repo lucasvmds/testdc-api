@@ -16,11 +16,10 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'total' => 'required|numeric',
             'customer_id' => 'nullable|exists:customers,id',
             'products' => 'required|array',
             'products.*' => 'required|array',
-            'products.*.id' => 'required|integer',
+            'products.*.id' => 'required|exists:products,id',
             'products.*.value' => 'required|numeric',
             'products.*.quantity' => 'required|numeric',
             'installments.*' => 'nullable|array',

@@ -18,15 +18,7 @@ class SaleTest extends TestCase
 {
     public function test_can_fetch_all_sales(): void
     {
-        $sale = Sale::factory()
-                            ->for(Customer::factory())
-                            ->for(User::factory())
-                            ->hasAttached(Product::factory(), [
-                                'value' => fake()->randomFloat(2, 300, 5200),
-                                'quantity' => fake()->randomDigitNotZero(),
-                            ])
-                            ->has(Installment::factory())
-                            ->create();
+        $sale = Sale::factory()->create();
         $products_count = $sale->products()->count();
         $installments_count = $sale->installments()->count();
         $response = $this
@@ -53,20 +45,21 @@ class SaleTest extends TestCase
     {
         $product = Product::factory()->create();
         $customer = Customer::factory()->create();
+        $product_quantity = fake()->randomDigitNotZero();
+        $sale_total = $product->value * $product_quantity;
         $sale_data = [
-            'total' => fake()->randomFloat(2, 3000, 5000),
             'customer_id' => $customer->id,
             'products' => [
                 [
                     'id' => $product->id,
                     'value' => $product->value,
-                    'quantity' => fake()->randomDigitNotZero(),
+                    'quantity' => $product_quantity,
                 ],
             ],
             'installments' => [
                 [
                     'due_date' => fake()->dateTimeBetween('-2 weeks')->format('Y-m-d'),
-                    'value' => fake()->randomFloat(2, 300, 500),
+                    'value' => fake()->numberBetween(300, 500),
                 ],
             ],
         ];
@@ -81,7 +74,7 @@ class SaleTest extends TestCase
                     ->has('data')
                     ->first(fn(AssertableJson $item): AssertableJson =>
                         $item
-                            ->where('total', $sale_data['total'])
+                            ->where('total', $sale_total)
                             ->where('customer_id', $sale_data['customer_id'])
                             ->has('products', 1, fn(AssertableJson $item): AssertableJson =>
                                 $item
@@ -104,16 +97,12 @@ class SaleTest extends TestCase
     public function test_can_fetch_sale(): void
     {
         $sale = Sale::factory()
-                            ->for(Customer::factory())
-                            ->for(User::factory())
-                            ->hasAttached(Product::factory(), [
-                                'value' => fake()->randomFloat(2, 300, 5200),
-                                'quantity' => fake()->randomDigitNotZero(),
-                            ])
                             ->has(Installment::factory())
                             ->create();
         $product = $sale->products()->first();
+        $products_count = $sale->products()->count();
         $installment = $sale->installments()->first();
+        $installments_count = $sale->installments()->count();
         $response = $this
                         ->withAuth()
                         ->get("/api/sales/$sale->id");
@@ -128,14 +117,14 @@ class SaleTest extends TestCase
                             ->where('total', $sale->total)
                             ->where('customer_id', $sale->customer_id)
                             ->where('user_id', $sale->user_id)
-                            ->has('products', 1, fn(AssertableJson $item): AssertableJson =>
+                            ->has('products', $products_count, fn(AssertableJson $item): AssertableJson =>
                                 $item
                                     ->where('id', $product->id)
                                     ->where('value', $product->pivot->value)
                                     ->where('quantity', $product->pivot->quantity)
                                     ->etc()
                             )
-                            ->has('installments', 1, fn(AssertableJson $item): AssertableJson =>
+                            ->has('installments', $installments_count, fn(AssertableJson $item): AssertableJson =>
                                 $item
                                     ->where('id', $installment->id)
                                     ->where('value', $installment->value)
@@ -150,12 +139,6 @@ class SaleTest extends TestCase
     public function test_can_delete_sale(): void
     {
         $sale = Sale::factory()
-                            ->for(Customer::factory())
-                            ->for(User::factory())
-                            ->hasAttached(Product::factory(), [
-                                'value' => fake()->randomFloat(2, 300, 5200),
-                                'quantity' => fake()->randomDigitNotZero(),
-                            ])
                             ->has(Installment::factory())
                             ->create();
         $product = $sale->products()->first();

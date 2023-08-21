@@ -33,6 +33,30 @@ class CustomerTest extends TestCase
             );
     }
 
+    public function test_can_fetch_all_customers_from_search(): void
+    {
+        $customer = Customer::factory()->create([
+            'name' => 'Test Customer',
+        ]);
+        Customer::factory(3)->create();
+        $response = $this
+                        ->withAuth()
+                        ->getJson("/api/customers/search?search=$customer->name");
+        $response
+            ->assertStatus(200)
+            ->assertJson(fn(AssertableJson $json): AssertableJson =>
+                $json
+                    ->has('data', 1, fn(AssertableJson $item): AssertableJson =>
+                        $item
+                            ->where('id', $customer->id)
+                            ->where('name', $customer->name)
+                            ->where('phone', $customer->phone)
+                            ->where('address', $customer->address)
+                            ->etc()
+                    )
+            );
+    }
+
     public function test_can_create_customer(): void
     {
         $customer_data = [

@@ -17,7 +17,7 @@ class InstallmentFactory extends Factory
     public function definition(): array
     {
         return [
-            'value' => fake()->randomFloat(2, 215, 6520),
+            'value' => fake()->numberBetween(215, 6520),
             'due_date' => fake()->date('Y-m-d'),
         ];
     }
