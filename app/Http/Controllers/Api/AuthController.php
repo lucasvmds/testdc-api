@@ -11,6 +11,9 @@ use Illuminate\Http\JsonResponse;
 
 class AuthController extends Controller
 {
+    /**
+     * @unauthenticated
+     */
     public function login(LoginRequest $request): JsonResponse
     {
         $data = $request->validated();

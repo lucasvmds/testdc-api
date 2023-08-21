@@ -1,5 +1,6 @@
 {
     "name": "laravel/laravel",
+    "version": "1.0.0",
     "type": "project",
     "description": "The skeleton application for the Laravel framework.",
     "keywords": ["laravel", "framework"],
@@ -12,6 +13,7 @@
         "laravel/tinker": "^2.8"
     },
     "require-dev": {
+        "dedoc/scramble": "^0.8.3",
         "fakerphp/faker": "^1.9.1",
         "laravel/pint": "^1.0",
         "laravel/sail": "^1.18",
