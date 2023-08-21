@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             \Database\Seeders\Develop\ProductSeeder::class,
             \Database\Seeders\Develop\UserSeeder::class,
             \Database\Seeders\Develop\CustomerSeeder::class,
+            \Database\Seeders\Develop\SaleSeeder::class,
         ];
         $production_seeders = [
             \Database\Seeders\Production\UserSeeder::class,

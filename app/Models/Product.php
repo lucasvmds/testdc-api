@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Http\Requests\Api\PaginateRequest;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class Product extends Model
@@ -21,6 +22,11 @@ class Product extends Model
     protected $casts = [
         'value' => 'float',
     ];
+
+    public function sales(): BelongsToMany
+    {
+        return $this->belongsToMany(Sale::class)->withPivot(['value', 'quantity']);
+    }
 
     public static function getAll(PaginateRequest $request): LengthAwarePaginator
     {

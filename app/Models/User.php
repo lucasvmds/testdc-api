@@ -9,6 +9,7 @@ namespace App\Models;
 use App\Enums\UserRole;
 use App\Http\Requests\Api\PaginateRequest;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\Notifiable;
@@ -38,6 +39,11 @@ class User extends Authenticatable
         'password' => 'hashed',
         'role' => UserRole::class,
     ];
+
+    public function sales(): HasMany
+    {
+        return $this->hasMany(Sale::class);
+    }
 
     public static function getAll(PaginateRequest $request): LengthAwarePaginator
     {
@@ -93,12 +99,12 @@ class User extends Authenticatable
             ->delete();
     }
 
-    public static function current(): static | false
+    public static function current(): static | null
     {
         /** @var Request */
         $request = app(Request::class);
         $access_token = PersonalAccessToken::findToken($request->bearerToken());
-        if (!$access_token) return false;
-        return $access_token->tokenable()->first() ?? false;
+        if (!$access_token) return null;
+        return $access_token->tokenable()->first();
     }
 }
